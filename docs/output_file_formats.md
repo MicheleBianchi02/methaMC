@@ -86,20 +86,32 @@ Each `.bin` file consists of two contiguous sections:
 ### 2.3 Data Payload & Window Geometry
 Starting at byte offset `4096`, the file stores `samples_written` contiguous `uint32_t` values.
 * Every integration window $j \in \{0, \dots, N_{\text{points}} - 1\}$ contains exactly `samples_per_window` ($N_w$) samples:
-  $$N_w = \left\lfloor \frac{t_{\text{int}}}{\text{ramp\\_dt}} + 0.5 \right\rfloor + 1$$
-* Within window $j$ (which starts at physical time $t_{\text{cycle\\_start}} = j \cdot (t_{\text{int}} + t_{\text{rst}})$), the $m$-th ramp sample ($m \in \{0, \dots, N_w - 1\}$) is recorded at physical time:
-  $$t_{j,m} = t_{\text{cycle\\_start}} + m \cdot \text{ramp\\_dt}$$
+```math
+N_w = \left\lfloor \frac{t_{\text{int}}}{\text{ramp\_dt}} + 0.5 \right\rfloor + 1
+```
+* Within window $j$ (which starts at physical time $`t_{\text{cycle\_start}} = j \cdot (t_{\text{int}} + t_{\text{rst}})`$), the $m$-th ramp sample ($m \in \{0, \dots, N_w - 1\}$) is recorded at physical time:
+```math
+t_{j,m} = t_{\text{cycle\_start}} + m \cdot \text{ramp\_dt}
+```
 * The flat 1D array of length $N_{\text{points}} \cdot N_w$ can be reshaped directly into a 2D matrix of shape `(N_points, samples_per_window)` where each row corresponds to a single integration ramp.
 
 ### 2.4 Quantization & Unit Conversion Formulas
 Ramp files always store quantized ADC codes $c \in [0, 2^{\text{adc\\_bits}} - 1]$.
 * **Forward Quantization (Simulator Internal)**:
   Given accumulated charge $Q$ (in $\text{pC}$), integrating capacitance $C_{\text{int}}$ (in $\text{pF}$), voltage range $[V_{\min}, V_{\max}]$ (in $\text{V}$), and optional Gaussian noise sample $V_{\text{noise}} \sim \mathcal{N}(0, \sigma_{\text{noise}}^2)$ (in $\text{V}$):
-  $$c = \min\left(2^{\text{adc\\_bits}} - 1, \; \max\left(0, \; \text{round}\left( \frac{Q / C_{\text{int}} + V_{\text{noise}} - V_{\min}}{V_{\max} - V_{\min}} \cdot \left(2^{\text{adc\\_bits}} - 1\right) \right)\right)\right)$$
+```math
+c = \min\left(2^{\text{adc\_bits}} - 1, \; \max\left(0, \; \text{round}\left( \frac{Q / C_{\text{int}} + V_{\text{noise}} - V_{\min}}{V_{\max} - V_{\min}} \cdot \left(2^{\text{adc\_bits}} - 1\right) \right)\right)\right)
+```
 * **Inverse Conversion (Reading Ramp Files)**:
   To convert raw `uint32_t` ADC codes $c$ back to physical voltage $V$ (in $\text{V}$) or accumulated charge $Q$ (in $\text{pC}$):
-  $$V = V_{\min} + \frac{c}{2^{\text{adc\\_bits}} - 1} \cdot \left(V_{\max} - V_{\min}\right)$$
-  $$Q = C_{\text{int}} \cdot V$$
+```math
+V = V_{\min} + \frac{c}{2^{\text{adc\_bits}} - 1} \cdot \left(V_{\max} - V_{\min}\right)
+```
+```math
+Q = C_{\text{int}} \cdot V
+```
+
+  
 
 ### 2.5 Reading `AQR1` Ramp Files in Python
 You can parse the header and memory-map or load the ramp windows in Python using `struct` and `numpy`:
