@@ -1,0 +1,34 @@
+# Simulation Configuration File
+# -----------------------------
+# Format: <key> <value> # <optional unit/comment>
+
+# --- Timing Parameters ---
+t_int               0.488      # [ms]  (Integration time)
+t_rst               0.427      # [ms]  (Reset time)
+rate                9600000    # [p/s] (Event rate)
+ramp_dt             1       # [us]  (ramp sampling interval)
+
+# --- Circuit Characteristics ---
+int_capacitor       22       # [pF]  (Integration capacitance)
+leakage_current     0         # [pA]  (DC leakage)
+relative_gain       0.0057       # [V/V] (Gain factor)
+
+# --- ADC Settings ---
+ADC_min_range_V     0       # [V]   
+ADC_max_range_V     5         # [V]   
+ADC_bit             12        # [bit] 
+
+# --- Signal & Noise Injections ---
+electronic_noise    0.0003          # [V]   (RMS noise)
+sinusoid_period     1000          # [ms]  (Period for test signal)
+sinusoid_amplitude  3000       # [p/s]  (Amplitude of test signal)
+custom_rate_gain    1000000    # [-] (Rate gain)
+
+
+# --- Simulation Control Flags ---
+N_points            20000      # [pts]  (Number of simulation steps)
+output_in_charge    0         # [bool] (0 = Voltage, 1 = Charge)
+add_sinusoid        0         # [bool] (Enable sinusoidal rate)
+add_noise           0         # [bool] (Enable electronic noise)
+sample_ramp         0         # [bool] (Enable ramp sampling)
+custom_rate         0         # [bool] (Use custom rate function)
