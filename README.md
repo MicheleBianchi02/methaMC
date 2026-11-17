@@ -1,3 +1,4 @@
+[![DOI](https://zenodo.org/badge/1459992904.svg)](https://doi.org/10.5281/zenodo.24283718)
 # Microdosimetric Multi-Event Monte Carlo Simulator
 
 methaMC (Multi-Event Tool for HAdrontherapy - Monte Carlo) is a custom Monte
